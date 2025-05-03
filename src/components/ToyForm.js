@@ -1,30 +1,25 @@
 import React from "react";
 
-function ToyForm() {
+function ToyForm({ formData, onFormChange, onFormSubmit }) {
   return (
     <div className="container">
-      <form className="add-toy-form">
+      <form className="add-toy-form" onSubmit={onFormSubmit}>
         <h3>Create a toy!</h3>
         <input
           type="text"
           name="name"
           placeholder="Enter a toy's name..."
-          className="input-text"
+          value={formData.name}
+          onChange={onFormChange}
         />
-        <br />
         <input
           type="text"
           name="image"
           placeholder="Enter a toy's image URL..."
-          className="input-text"
+          value={formData.image}
+          onChange={onFormChange}
         />
-        <br />
-        <input
-          type="submit"
-          name="submit"
-          value="Create New Toy"
-          className="submit"
-        />
+        <button type="submit">Add Toy</button>
       </form>
     </div>
   );
