@@ -44,9 +44,41 @@ function App() {
       .then((response) => response.json())
       .then((newToy) => {
         setToys((prevToys) => [...prevToys, newToy]);
-        setFormData({ name: "", image: "", likes: 0 }); 
+        setFormData({ name: "", image: "", likes: 0 });
       })
       .catch((error) => console.log(`Error posting: `, error));
+  }
+
+  function handleLikeChange(id) {
+    const toy = toys.find((toy) => toy.id === id);
+    const updatedLikes = toy.likes + 1;
+
+    fetch(`http://localhost:3001/toys/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ likes: updatedLikes }),
+    })
+      .then((response) => response.json())
+      .then((updatedToy) => {
+        setToys((prevToys) =>
+          prevToys.map((toy) =>
+            toy.id === id ? { ...toy, likes: updatedToy.likes } : toy
+          )
+        );
+      })
+      .catch((error) => console.log(`Error updating likes: `, error));
+  }
+
+  function handleDelete(id) {
+    fetch(`http://localhost:3001/toys/${id}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setToys((prevToys) => prevToys.filter((toy) => toy.id !== id));
+      })
+      .catch((error) => console.log(`Error deleting toy: `, error));
   }
 
   return (
@@ -62,7 +94,11 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} />
+      <ToyContainer
+        toys={toys}
+        OnLikeChange={handleLikeChange}
+        onDelete={handleDelete}
+      />
     </>
   );
 }
